@@ -30,6 +30,9 @@ public class Product {
     )
     private final Set<Category> categories = new HashSet<>();
 
+    @OneToMany(mappedBy = "id.product")
+    private final Set<OrderItem> items = new HashSet<>();
+
     public Product() {
     }
 
