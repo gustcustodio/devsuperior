@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.List;
 
 @Entity
 @Table(name = "tb_order")
@@ -77,5 +78,13 @@ public class Order {
 
     public void setPayment(Payment payment) {
         this.payment = payment;
+    }
+
+    public HashSet<OrderItem> getItems() {
+        return items;
+    }
+
+    public List<Product> getProducts() {
+        return items.stream().map(OrderItem::getProduct).toList();
     }
 }
