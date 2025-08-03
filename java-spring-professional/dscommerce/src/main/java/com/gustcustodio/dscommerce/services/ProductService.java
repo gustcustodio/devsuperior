@@ -3,13 +3,12 @@ package com.gustcustodio.dscommerce.services;
 import com.gustcustodio.dscommerce.dto.ProductDTO;
 import com.gustcustodio.dscommerce.entities.Product;
 import com.gustcustodio.dscommerce.repositories.ProductRepository;
+import com.gustcustodio.dscommerce.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 public class ProductService {
@@ -19,8 +18,9 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public ProductDTO findById(Long id) {
-        Optional<Product> result = repository.findById(id);
-        Product product = result.get();
+        Product product = repository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ProductDTO(product);
     }
 
