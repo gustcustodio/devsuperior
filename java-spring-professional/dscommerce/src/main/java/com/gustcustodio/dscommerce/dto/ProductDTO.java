@@ -4,19 +4,15 @@ import com.gustcustodio.dscommerce.entities.Product;
 
 public class ProductDTO {
 
-    private Long id;
+    private final Long id;
 
-    private String name;
+    private final String name;
 
-    private String description;
+    private final String description;
 
-    private Double price;
+    private final Double price;
 
-    private String imgUrl;
-
-
-    public ProductDTO() {
-    }
+    private final String imgUrl;
 
     public ProductDTO(Long id, String name, String description, Double price, String imgUrl) {
         this.id = id;
