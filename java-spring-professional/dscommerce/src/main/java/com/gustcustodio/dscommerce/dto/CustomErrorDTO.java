@@ -4,10 +4,13 @@ import java.time.Instant;
 
 public class CustomErrorDTO {
 
-    private final Instant timestamp;
-    private final Integer status;
-    private final String error;
-    private final String path;
+    private Instant timestamp;
+    private Integer status;
+    private String error;
+    private String path;
+
+    public CustomErrorDTO() {
+    }
 
     public CustomErrorDTO(Instant timestamp, Integer status, String error, String path) {
         this.timestamp = timestamp;
