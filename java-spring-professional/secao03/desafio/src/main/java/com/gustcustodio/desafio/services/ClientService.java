@@ -27,4 +27,10 @@ public class ClientService {
         return clientPage.map(ClientDTO::new);
     }
 
+    public ClientDTO insert(ClientDTO clientDTO) {
+        Client client = new Client(clientDTO);
+        client = clientRepository.save(client);
+        return new ClientDTO(client);
+    }
+
 }

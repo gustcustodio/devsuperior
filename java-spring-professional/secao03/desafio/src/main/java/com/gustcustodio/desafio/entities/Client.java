@@ -1,5 +1,6 @@
 package com.gustcustodio.desafio.entities;
 
+import com.gustcustodio.desafio.dto.ClientDTO;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -32,6 +33,15 @@ public class Client {
         this.income = income;
         this.birthDate = birthDate;
         this.children = children;
+    }
+
+    public Client(ClientDTO clientDTO) {
+        this.id = clientDTO.getId();
+        this.name = clientDTO.getName();
+        this.cpf = clientDTO.getCpf();
+        this.income = clientDTO.getIncome();
+        this.birthDate = clientDTO.getBirthDate();
+        this.children = clientDTO.getChildren();
     }
 
     public Long getId() {
