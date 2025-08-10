@@ -3,6 +3,7 @@ package com.gustcustodio.desafio.services;
 import com.gustcustodio.desafio.dto.ClientDTO;
 import com.gustcustodio.desafio.entities.Client;
 import com.gustcustodio.desafio.repositories.ClientRepository;
+import com.gustcustodio.desafio.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +20,10 @@ public class ClientService {
 
     @Transactional(readOnly = true)
     public ClientDTO findById(Long id) {
-        Optional<Client> optionalClient = clientRepository.findById(id);
-        Client client = optionalClient.get();
+        Client client =
+                clientRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResourceNotFoundException("Recurso não encontrado"));
         return new ClientDTO(client);
     }
 

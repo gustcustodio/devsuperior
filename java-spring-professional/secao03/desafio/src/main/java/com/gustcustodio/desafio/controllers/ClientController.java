@@ -34,11 +34,11 @@ public class ClientController {
     public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO clientDTO) {
         clientDTO = clientService.insert(clientDTO);
         URI uri =
-                ServletUriComponentsBuilder.
-                        fromCurrentRequest().
-                        path("/{id}").
-                        buildAndExpand(clientDTO.getId()).
-                        toUri();
+                ServletUriComponentsBuilder
+                        .fromCurrentRequest()
+                        .path("/{id}")
+                        .buildAndExpand(clientDTO.getId())
+                        .toUri();
         return ResponseEntity.created(uri).body(clientDTO);
     }
 
