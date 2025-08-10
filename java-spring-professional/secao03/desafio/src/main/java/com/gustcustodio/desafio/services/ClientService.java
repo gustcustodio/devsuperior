@@ -4,6 +4,7 @@ import com.gustcustodio.desafio.dto.ClientDTO;
 import com.gustcustodio.desafio.entities.Client;
 import com.gustcustodio.desafio.repositories.ClientRepository;
 import com.gustcustodio.desafio.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,10 +43,14 @@ public class ClientService {
 
     @Transactional
     public ClientDTO update(Long id, ClientDTO clientDTO) {
-        Client client = clientRepository.getReferenceById(id);
-        copyDtoToEntity(clientDTO, client);
-        client = clientRepository.save(client);
-        return new ClientDTO(client);
+        try {
+            Client client = clientRepository.getReferenceById(id);
+            copyDtoToEntity(clientDTO, client);
+            client = clientRepository.save(client);
+            return new ClientDTO(client);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado");
+        }
     }
 
     @Transactional
