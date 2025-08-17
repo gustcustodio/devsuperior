@@ -1,21 +1,30 @@
 package com.devsuperior.aula.dto;
 
+import com.devsuperior.aula.entities.Person;
+
 public class PersonDepartmentDTO {
 
     private Long id;
     private String name;
     private Double salary;
 
-    private DepartmentDTO departmentDTO;
+    private DepartmentDTO department;
 
     public PersonDepartmentDTO() {
     }
 
-    public PersonDepartmentDTO(Long id, String name, Double salary, DepartmentDTO departmentDTO) {
+    public PersonDepartmentDTO(Long id, String name, Double salary, DepartmentDTO department) {
         this.id = id;
         this.name = name;
         this.salary = salary;
-        this.departmentDTO = departmentDTO;
+        this.department = department;
+    }
+
+    public PersonDepartmentDTO(Person person) {
+        id = person.getId();
+        name = person.getName();
+        salary = person.getSalary();
+        department = new DepartmentDTO(person.getDepartment());
     }
 
     public Long getId() {
@@ -30,8 +39,8 @@ public class PersonDepartmentDTO {
         return salary;
     }
 
-    public DepartmentDTO getDepartmentDTO() {
-        return departmentDTO;
+    public DepartmentDTO getDepartment() {
+        return department;
     }
 
 }
