@@ -12,33 +12,33 @@ import javax.persistence.Table;
 @Table(name = "genres")
 public class Genre {
 
-	@Id
-	private Long id;
-	private String description;
-	
-	@OneToMany(mappedBy = "genre")
-	private List<Movie> movies = new ArrayList<>();
-	
-	public Genre() {
-	}
+    @Id
+    private Long id;
+    private String description;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "genre")
+    private List<Movie> movies = new ArrayList<>();
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Genre() {
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public List<Movie> getMovies() {
-		return movies;
-	}
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
 }

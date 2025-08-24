@@ -10,38 +10,38 @@ import javax.persistence.Table;
 @Table(name = "movies")
 public class Movie {
 
-	@Id
-	private Long id;
-	private String name;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_genres")
-	private Genre genre;
-	
-	public Movie() {
-	}
+    @Id
+    private Long id;
+    private String name;
 
-	public Long getId() {
-		return id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "id_genres")
+    private Genre genre;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Movie() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Genre getGenre() {
-		return genre;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setGenre(Genre genre) {
-		this.genre = genre;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
 }
