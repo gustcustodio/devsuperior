@@ -10,56 +10,56 @@ import javax.persistence.Table;
 @Table(name = "products")
 public class Product {
 
-	@Id
-	private Long id;
-	private String name;
-	private Integer amount;
-	private Double price;
-	
-	@ManyToOne
-	@JoinColumn(name = "id_providers")
-	private Provider provider;
-	
-	public Product() {
-	}
+    @Id
+    private Long id;
+    private String name;
+    private Integer amount;
+    private Double price;
 
-	public Long getId() {
-		return id;
-	}
+    @ManyToOne
+    @JoinColumn(name = "id_providers")
+    private Provider provider;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Product() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public Integer getAmount() {
-		return amount;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setAmount(Integer amount) {
-		this.amount = amount;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Double getPrice() {
-		return price;
-	}
+    public Integer getAmount() {
+        return amount;
+    }
 
-	public void setPrice(Double price) {
-		this.price = price;
-	}
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
 
-	public Provider getProvider() {
-		return provider;
-	}
+    public Double getPrice() {
+        return price;
+    }
 
-	public void setProvider(Provider provider) {
-		this.provider = provider;
-	}
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Provider getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Provider provider) {
+        this.provider = provider;
+    }
 }

@@ -12,60 +12,60 @@ import javax.persistence.Table;
 @Table(name = "providers")
 public class Provider {
 
-	@Id
-	private Long id;
-	private String name;
-	private String street;
-	private String city;
-	private String state;
-	
-	@OneToMany(mappedBy = "provider")
-	private List<Product> products = new ArrayList<>();
-	
-	public Provider() {
-	}
+    @Id
+    private Long id;
+    private String name;
+    private String street;
+    private String city;
+    private String state;
 
-	public Long getId() {
-		return id;
-	}
+    @OneToMany(mappedBy = "provider")
+    private List<Product> products = new ArrayList<>();
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Provider() {
+    }
 
-	public String getName() {
-		return name;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getStreet() {
-		return street;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setStreet(String street) {
-		this.street = street;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getCity() {
-		return city;
-	}
+    public String getStreet() {
+        return street;
+    }
 
-	public void setCity(String city) {
-		this.city = city;
-	}
+    public void setStreet(String street) {
+        this.street = street;
+    }
 
-	public String getState() {
-		return state;
-	}
+    public String getCity() {
+        return city;
+    }
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    public void setCity(String city) {
+        this.city = city;
+    }
 
-	public List<Product> getProducts() {
-		return products;
-	}
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
 }
