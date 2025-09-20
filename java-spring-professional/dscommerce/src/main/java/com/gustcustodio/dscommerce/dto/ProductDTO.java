@@ -1,9 +1,14 @@
 package com.gustcustodio.dscommerce.dto;
 
+import com.gustcustodio.dscommerce.entities.Category;
 import com.gustcustodio.dscommerce.entities.Product;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDTO {
 
@@ -22,6 +27,9 @@ public class ProductDTO {
 
     private String imgUrl;
 
+    @NotEmpty(message = "Deve ter pelo menos uma categoria")
+    private List<CategoryDTO> categories = new ArrayList<>();
+
     public ProductDTO() {
     }
 
@@ -33,12 +41,15 @@ public class ProductDTO {
         this.imgUrl = imgUrl;
     }
 
-    public ProductDTO(Product product) {
-        this.id = product.getId();
-        this.name = product.getName();
-        this.description = product.getDescription();
-        this.price = product.getPrice();
-        this.imgUrl = product.getImgUrl();
+    public ProductDTO(Product entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.description = entity.getDescription();
+        this.price = entity.getPrice();
+        this.imgUrl = entity.getImgUrl();
+        for (Category category : entity.getCategories()) {
+            categories.add(new CategoryDTO(category));
+        }
     }
 
     public Long getId() {
@@ -60,4 +71,9 @@ public class ProductDTO {
     public String getImgUrl() {
         return imgUrl;
     }
+
+    public List<CategoryDTO> getCategories() {
+        return categories;
+    }
+
 }
