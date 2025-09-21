@@ -17,16 +17,16 @@ import java.time.Instant;
 public class OrderService {
 
     @Autowired
-    OrderRepository orderRepository;
+    private OrderRepository orderRepository;
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Autowired
-    OrderItemRepository orderItemRepository;
+    private OrderItemRepository orderItemRepository;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Transactional(readOnly = true)
     public OrderDTO findById(Long id) {
