@@ -23,7 +23,7 @@ public class OrderItem {
         this.id.setOrder(order);
         this.id.setProduct(product);
         this.quantity = quantity;
-        this.price = price;
+        this.price = product.getPrice();
     }
 
     public Order getOrder() {

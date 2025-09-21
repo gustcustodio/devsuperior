@@ -3,6 +3,7 @@ package com.gustcustodio.dscommerce.dto;
 import com.gustcustodio.dscommerce.entities.Order;
 import com.gustcustodio.dscommerce.entities.OrderItem;
 import com.gustcustodio.dscommerce.entities.OrderStatus;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -15,7 +16,12 @@ public class OrderDTO {
     private OrderStatus status;
     private ClientDTO clientDTO;
     private PaymentDTO paymentDTO;
-    private List<OrderItemDTO> orderItemDTOList = new ArrayList<>();
+
+    @NotEmpty(message = "Deve ter pelo menos uma categoria")
+    private List<OrderItemDTO> items = new ArrayList<>();
+
+    public OrderDTO() {
+    }
 
     public OrderDTO(Long id, Instant moment, OrderStatus status, ClientDTO clientDTO, PaymentDTO paymentDTO) {
         this.id = id;
@@ -33,7 +39,7 @@ public class OrderDTO {
         this.paymentDTO = (entity.getPayment() == null) ? null : new PaymentDTO(entity.getPayment());
         for (OrderItem orderItem : entity.getItems()) {
             OrderItemDTO orderItemDTO = new OrderItemDTO(orderItem);
-            orderItemDTOList.add(orderItemDTO);
+            items.add(orderItemDTO);
         }
     }
 
@@ -57,14 +63,14 @@ public class OrderDTO {
         return paymentDTO;
     }
 
-    public List<OrderItemDTO> getOrderItemDTOList() {
-        return orderItemDTOList;
+    public List<OrderItemDTO> getItems() {
+        return items;
     }
 
     public Double getTotal() {
         double sum = 0.0;
 
-        for (OrderItemDTO orderItemDTO : orderItemDTOList) {
+        for (OrderItemDTO orderItemDTO : items) {
             sum += orderItemDTO.getSubTotal();
         }
 
