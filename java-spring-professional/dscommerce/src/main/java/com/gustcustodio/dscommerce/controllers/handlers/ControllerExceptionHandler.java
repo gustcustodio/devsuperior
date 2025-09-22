@@ -3,6 +3,7 @@ package com.gustcustodio.dscommerce.controllers.handlers;
 import com.gustcustodio.dscommerce.dto.CustomErrorDTO;
 import com.gustcustodio.dscommerce.dto.ValidationErrorDTO;
 import com.gustcustodio.dscommerce.services.exceptions.DatabaseException;
+import com.gustcustodio.dscommerce.services.exceptions.ForbiddenException;
 import com.gustcustodio.dscommerce.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,13 @@ public class ControllerExceptionHandler {
             validationErrorDTO.addError(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return ResponseEntity.status(status).body(validationErrorDTO);
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<CustomErrorDTO> forbidden(ForbiddenException e, HttpServletRequest request) {
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        CustomErrorDTO customErrorDTO = new CustomErrorDTO(Instant.now(), status.value(), e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(customErrorDTO);
     }
 
 }
