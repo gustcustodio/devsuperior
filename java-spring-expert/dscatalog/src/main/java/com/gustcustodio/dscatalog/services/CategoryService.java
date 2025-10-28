@@ -1,5 +1,6 @@
 package com.gustcustodio.dscatalog.services;
 
+import com.gustcustodio.dscatalog.dtos.CategoryDTO;
 import com.gustcustodio.dscatalog.entities.Category;
 import com.gustcustodio.dscatalog.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +16,9 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public List<Category> findAll() {
-        return categoryRepository.findAll();
+    public List<CategoryDTO> findAll() {
+        List<Category> list = categoryRepository.findAll();
+        return list.stream().map(CategoryDTO::new).toList();
     }
 
 }
