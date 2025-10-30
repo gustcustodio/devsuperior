@@ -3,7 +3,7 @@ package com.gustcustodio.dscatalog.services;
 import com.gustcustodio.dscatalog.dtos.CategoryDTO;
 import com.gustcustodio.dscatalog.entities.Category;
 import com.gustcustodio.dscatalog.repositories.CategoryRepository;
-import com.gustcustodio.dscatalog.services.exceptions.EntityNotFoundException;
+import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +24,7 @@ public class CategoryService {
 
     @Transactional(readOnly = true)
     public CategoryDTO findById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Resource not found"));
         return new CategoryDTO(category);
     }
 
