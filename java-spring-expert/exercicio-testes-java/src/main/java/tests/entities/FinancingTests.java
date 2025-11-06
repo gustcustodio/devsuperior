@@ -19,4 +19,19 @@ public class FinancingTests {
         });
     }
 
+    @Test
+    public void shouldUpdateTotalAmountWhenDataIsValid() {
+        Financing financing = new Financing(100000.0, 2000.0, 100);
+        financing.setTotalAmount(120000.0);
+        Assertions.assertEquals(120000.0, financing.getTotalAmount());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenDataToSetTotalAmountIsInvalid() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Financing financing = new Financing(100000.0, 2000.0, 80);
+            financing.setTotalAmount(120000.0);
+        });
+    }
+
 }
