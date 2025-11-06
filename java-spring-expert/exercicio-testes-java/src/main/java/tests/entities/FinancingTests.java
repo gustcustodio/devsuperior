@@ -49,4 +49,19 @@ public class FinancingTests {
         });
     }
 
+    @Test
+    public void shouldUpdateMonthsWhenDataIsValid() {
+        Financing financing = new Financing(100000.0, 2000.0, 80);
+        financing.setMonths(100);
+        Assertions.assertEquals(100, financing.getMonths());
+    }
+
+    @Test
+    public void shouldThrowExceptionWhenDataToSetMonthsIsInvalid() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            Financing financing = new Financing(100000.0, 2000.0, 80);
+            financing.setMonths(50);
+        });
+    }
+
 }
