@@ -70,4 +70,10 @@ public class FinancingTests {
         Assertions.assertEquals(20000.0, financing.entry());
     }
 
+    @Test
+    public void shouldCalculateCorrectlyTheValueOfQuota() {
+        Financing financing = new Financing(100000.0, 2000.0, 80);
+        Assertions.assertEquals(1000.0, financing.quota());
+    }
+
 }
