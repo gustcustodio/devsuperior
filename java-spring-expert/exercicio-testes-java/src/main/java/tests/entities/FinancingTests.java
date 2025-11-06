@@ -13,7 +13,7 @@ public class FinancingTests {
     }
 
     @Test
-    public void shouldThrowExceptionWhenDataIsInvalid() {
+    public void shouldThrowExceptionWhenDataToCreateObjectIsInvalid() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             Financing financing = new Financing(100000.0, 2000.0, 20);
         });
