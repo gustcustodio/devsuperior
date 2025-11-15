@@ -1,5 +1,6 @@
 package com.gustcustodio.dscatalog.services;
 
+import com.gustcustodio.dscatalog.dtos.ProductDTO;
 import com.gustcustodio.dscatalog.entities.Product;
 import com.gustcustodio.dscatalog.repositories.ProductRepository;
 import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
@@ -14,7 +15,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -75,6 +78,14 @@ public class ProductServiceTests {
         Assertions.assertThrows(DatabaseException.class, () -> {
             productService.delete(dependentId);
         });
+    }
+
+    @Test
+    public void findAllPagedShouldReturnPage() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<ProductDTO> result = productService.findAllPaged(pageable);
+        Assertions.assertNotNull(result);
+        Mockito.verify(productRepository, Mockito.times(1)).findAll(pageable);
     }
 
 }
