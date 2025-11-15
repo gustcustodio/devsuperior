@@ -94,4 +94,11 @@ public class ProductServiceTests {
         Assertions.assertNotNull(result);
     }
 
+    @Test
+    public void findByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExists() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            productService.findById(nonExistingId);
+        });
+    }
+
 }
