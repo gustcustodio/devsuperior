@@ -1,6 +1,7 @@
 package com.gustcustodio.dscatalog.services;
 
 import com.gustcustodio.dscatalog.repositories.ProductRepository;
+import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,14 +21,17 @@ public class ProductServiceTests {
     private ProductRepository productRepository;
 
     private long existingId;
+    private long nonExistingId;
 
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;
+        nonExistingId = 2L;
 
         Mockito.doNothing().when(productRepository).deleteById(existingId);
 
         Mockito.when(productRepository.existsById(existingId)).thenReturn(true);
+        Mockito.when(productRepository.existsById(nonExistingId)).thenReturn(false);
     }
 
     @Test
@@ -36,6 +40,13 @@ public class ProductServiceTests {
             productService.delete(existingId);
         });
         Mockito.verify(productRepository, Mockito.times(1)).deleteById(existingId);
+    }
+
+    @Test
+    public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExists() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            productService.delete(nonExistingId);
+        });
     }
 
 }
