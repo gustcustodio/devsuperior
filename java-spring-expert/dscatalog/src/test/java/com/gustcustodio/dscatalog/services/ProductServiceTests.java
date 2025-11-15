@@ -88,4 +88,10 @@ public class ProductServiceTests {
         Mockito.verify(productRepository, Mockito.times(1)).findAll(pageable);
     }
 
+    @Test
+    public void findByIdShouldReturnProductDTOWhenIdExists() {
+        ProductDTO result = productService.findById(existingId);
+        Assertions.assertNotNull(result);
+    }
+
 }
