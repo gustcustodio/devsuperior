@@ -121,4 +121,11 @@ public class ProductServiceTests {
         Assertions.assertNotNull(result);
     }
 
+    @Test
+    public void updateShouldReturnResourceNotFoundExceptionWhenIdDoesNotExists() {
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> {
+            productService.update(nonExistingId, productDTO);
+        });
+    }
+
 }
