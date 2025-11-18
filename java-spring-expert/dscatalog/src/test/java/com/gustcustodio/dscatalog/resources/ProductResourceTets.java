@@ -127,4 +127,9 @@ public class ProductResourceTets {
         mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}", existingId)).andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
+    @Test
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}", nonExistingId)).andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
 }
