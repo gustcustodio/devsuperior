@@ -3,6 +3,7 @@ package com.gustcustodio.dscatalog.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gustcustodio.dscatalog.dtos.ProductDTO;
 import com.gustcustodio.dscatalog.services.ProductService;
+import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
 import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
 import com.gustcustodio.dscatalog.tests.Factory;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ public class ProductResourceTets {
 
     private Long existingId;
     private Long nonExistingId;
+    private long dependentId;
     private ProductDTO productDTO;
     private PageImpl<ProductDTO> page;
 
@@ -44,6 +46,7 @@ public class ProductResourceTets {
     void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 2L;
+        dependentId = 3L;
         productDTO = Factory.createProductDTO();
         page = new PageImpl<>(List.of(productDTO));
 
@@ -53,6 +56,9 @@ public class ProductResourceTets {
         Mockito.when(productService.update(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(productDTO);
         Mockito.when(productService.update(ArgumentMatchers.eq(nonExistingId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
         Mockito.when(productService.insert(ArgumentMatchers.any())).thenReturn(productDTO);
+        Mockito.doNothing().when(productService).delete(existingId);
+        Mockito.doThrow(ResourceNotFoundException.class).when(productService).delete(nonExistingId);
+        Mockito.doThrow(DatabaseException.class).when(productService).delete(dependentId);
     }
 
     @Test
@@ -114,6 +120,11 @@ public class ProductResourceTets {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(existingId));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(productDTO.getName()));
         result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
+    }
+
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/{id}", existingId)).andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
 }
