@@ -52,6 +52,7 @@ public class ProductResourceTets {
         Mockito.when(productService.findById(nonExistingId)).thenThrow(ResourceNotFoundException.class);
         Mockito.when(productService.update(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(productDTO);
         Mockito.when(productService.update(ArgumentMatchers.eq(nonExistingId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundException.class);
+        Mockito.when(productService.insert(ArgumentMatchers.any())).thenReturn(productDTO);
     }
 
     @Test
@@ -99,6 +100,20 @@ public class ProductResourceTets {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
         result.andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
+
+    @Test
+    public void insertShouldReturnProductDTOCreated() throws Exception {
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+        ResultActions result =
+                mockMvc.perform(MockMvcRequestBuilders.post("/products")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(MockMvcResultMatchers.status().isCreated());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(existingId));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.name").value(productDTO.getName()));
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.description").exists());
     }
 
 }
