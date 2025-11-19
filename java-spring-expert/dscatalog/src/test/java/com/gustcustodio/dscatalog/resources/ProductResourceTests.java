@@ -16,16 +16,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.assertj.MockMvcTester;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.List;
 
 @WebMvcTest(ProductResource.class)
-public class ProductResourceTets {
+public class ProductResourceTests {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +36,7 @@ public class ProductResourceTets {
 
     private Long existingId;
     private Long nonExistingId;
-    private long dependentId;
+    private Long dependentId;
     private ProductDTO productDTO;
     private PageImpl<ProductDTO> page;
 
