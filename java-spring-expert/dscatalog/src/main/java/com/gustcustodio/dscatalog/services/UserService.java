@@ -2,6 +2,7 @@ package com.gustcustodio.dscatalog.services;
 
 import com.gustcustodio.dscatalog.dtos.RoleDTO;
 import com.gustcustodio.dscatalog.dtos.UserDTO;
+import com.gustcustodio.dscatalog.dtos.UserInsertDTO;
 import com.gustcustodio.dscatalog.entities.Role;
 import com.gustcustodio.dscatalog.entities.User;
 import com.gustcustodio.dscatalog.repositories.RoleRepository;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,9 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
@@ -39,9 +44,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO insert(UserDTO dto) {
+    public UserDTO insert(UserInsertDTO dto) {
         User entity = new User();
         copyDtoToEntity(dto, entity);
+        entity.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
         entity = userRepository.save(entity);
         return new UserDTO(entity);
     }
