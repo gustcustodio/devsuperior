@@ -5,6 +5,7 @@ import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -26,6 +27,14 @@ public class ResourceExceptionHandler {
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         StandardError standardError =
                 new StandardError(Instant.now(), httpStatus.value(), e.getMessage(), "Database exception", request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(standardError);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> validation(MethodArgumentNotValidException e, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.UNPROCESSABLE_ENTITY;
+        StandardError standardError =
+                new StandardError(Instant.now(), httpStatus.value(), e.getMessage(), "Validation exception", request.getRequestURI());
         return ResponseEntity.status(httpStatus).body(standardError);
     }
 
