@@ -1,6 +1,9 @@
 package com.gustcustodio.dscatalog.dtos;
 
-public class UserInsertDTO extends UserDTO{
+import com.gustcustodio.dscatalog.services.validations.UserInsertValid;
+
+@UserInsertValid
+public class UserInsertDTO extends UserDTO {
 
     private String password;
 
