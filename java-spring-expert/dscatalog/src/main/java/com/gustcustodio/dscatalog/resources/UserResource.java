@@ -2,6 +2,7 @@ package com.gustcustodio.dscatalog.resources;
 
 import com.gustcustodio.dscatalog.dtos.UserDTO;
 import com.gustcustodio.dscatalog.dtos.UserInsertDTO;
+import com.gustcustodio.dscatalog.dtos.UserUpdateDTO;
 import com.gustcustodio.dscatalog.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,9 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserDTO dto) {
-        dto = userService.update(id, dto);
-        return ResponseEntity.ok().body(dto);
+    public ResponseEntity<UserDTO> update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
+        UserDTO newDto = userService.update(id, dto);
+        return ResponseEntity.ok().body(newDto);
     }
 
     @DeleteMapping(value = "/{id}")

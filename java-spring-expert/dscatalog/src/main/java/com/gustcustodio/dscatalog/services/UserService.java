@@ -3,6 +3,7 @@ package com.gustcustodio.dscatalog.services;
 import com.gustcustodio.dscatalog.dtos.RoleDTO;
 import com.gustcustodio.dscatalog.dtos.UserDTO;
 import com.gustcustodio.dscatalog.dtos.UserInsertDTO;
+import com.gustcustodio.dscatalog.dtos.UserUpdateDTO;
 import com.gustcustodio.dscatalog.entities.Role;
 import com.gustcustodio.dscatalog.entities.User;
 import com.gustcustodio.dscatalog.repositories.RoleRepository;
@@ -53,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTO update(Long id, UserDTO dto) {
+    public UserDTO update(Long id, UserUpdateDTO dto) {
         try {
             User entity = userRepository.getReferenceById(id);
             copyDtoToEntity(dto, entity);
