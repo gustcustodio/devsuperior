@@ -6,6 +6,7 @@ import com.gustcustodio.dscatalog.dtos.UserInsertDTO;
 import com.gustcustodio.dscatalog.dtos.UserUpdateDTO;
 import com.gustcustodio.dscatalog.entities.Role;
 import com.gustcustodio.dscatalog.entities.User;
+import com.gustcustodio.dscatalog.projections.UserDetailsProjection;
 import com.gustcustodio.dscatalog.repositories.RoleRepository;
 import com.gustcustodio.dscatalog.repositories.UserRepository;
 import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
@@ -15,13 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
@@ -30,7 +36,7 @@ public class UserService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public Page<UserDTO> findAllPaged(Pageable pageable) {
@@ -48,7 +54,7 @@ public class UserService {
     public UserDTO insert(UserInsertDTO dto) {
         User entity = new User();
         copyDtoToEntity(dto, entity);
-        entity.setPassword(bCryptPasswordEncoder.encode(dto.getPassword()));
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         entity = userRepository.save(entity);
         return new UserDTO(entity);
     }
@@ -86,6 +92,22 @@ public class UserService {
             Role role = roleRepository.getReferenceById(roleDTO.getId());
             entity.getRoles().add(role);
         }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        List<UserDetailsProjection> result = userRepository.searchUserAndRolesByEmail(username);
+
+        if (result.isEmpty()) throw new UsernameNotFoundException("User not found");
+
+        User user = new User();
+        user.setEmail(username);
+        user.setPassword(result.getFirst().getPassword());
+        for (UserDetailsProjection projection : result) {
+            user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
+        }
+
+        return user;
     }
 
 }
