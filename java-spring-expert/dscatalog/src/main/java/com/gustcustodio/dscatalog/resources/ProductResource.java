@@ -1,6 +1,7 @@
 package com.gustcustodio.dscatalog.resources;
 
 import com.gustcustodio.dscatalog.dtos.ProductDTO;
+import com.gustcustodio.dscatalog.projections.ProductProjection;
 import com.gustcustodio.dscatalog.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +22,13 @@ public class ProductResource {
     private ProductService productService;
 
     @GetMapping
-    public ResponseEntity<Page<ProductDTO>> findAll(Pageable pageable) {
-        Page<ProductDTO> list = productService.findAllPaged(pageable);
-        return ResponseEntity.ok().body(list);
+    public ResponseEntity<Page<ProductProjection>> findAll(
+            @RequestParam(value = "name", defaultValue = "") String name,
+            @RequestParam(value = "categoryId", defaultValue = "0") String categoryId,
+            Pageable pageable
+    ) {
+        Page<ProductProjection> page = productService.findAllPaged(name, categoryId, pageable);
+        return ResponseEntity.ok().body(page);
     }
 
     @GetMapping(value = "/{id}")

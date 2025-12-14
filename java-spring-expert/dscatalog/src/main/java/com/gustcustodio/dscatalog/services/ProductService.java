@@ -4,6 +4,7 @@ import com.gustcustodio.dscatalog.dtos.CategoryDTO;
 import com.gustcustodio.dscatalog.dtos.ProductDTO;
 import com.gustcustodio.dscatalog.entities.Category;
 import com.gustcustodio.dscatalog.entities.Product;
+import com.gustcustodio.dscatalog.projections.ProductProjection;
 import com.gustcustodio.dscatalog.repositories.CategoryRepository;
 import com.gustcustodio.dscatalog.repositories.ProductRepository;
 import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
@@ -16,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ProductService {
@@ -30,6 +34,15 @@ public class ProductService {
     public Page<ProductDTO> findAllPaged(Pageable pageable) {
         Page<Product> page = productRepository.findAll(pageable);
         return page.map(ProductDTO::new);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ProductProjection> findAllPaged(String name, String categoryId, Pageable pageable) {
+        List<Long> categoryIds = Arrays.asList();
+        if (!"0".equals(categoryId)) {
+            categoryIds = Arrays.asList(categoryId.split(",")).stream().map(Long::parseLong).toList();
+        }
+        return productRepository.searchProducts(categoryIds, name, pageable);
     }
 
     @Transactional(readOnly = true)
