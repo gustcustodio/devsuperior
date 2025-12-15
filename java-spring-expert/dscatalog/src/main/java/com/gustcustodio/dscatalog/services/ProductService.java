@@ -9,6 +9,7 @@ import com.gustcustodio.dscatalog.repositories.CategoryRepository;
 import com.gustcustodio.dscatalog.repositories.ProductRepository;
 import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
 import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
+import com.gustcustodio.dscatalog.utils.Utils;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -46,6 +47,7 @@ public class ProductService {
         Page<ProductProjection> page = productRepository.searchProducts(categoryIds, name, pageable);
         List<Long> productIds = page.map(product -> product.getId()).toList();
         List<Product> entities = productRepository.searchProductsWithCategories(productIds);
+        entities = Utils.replace(page.getContent(), entities);
         List<ProductDTO> dtos = entities.stream().map(product -> new ProductDTO(product, product.getCategories())).toList();
         return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
     }

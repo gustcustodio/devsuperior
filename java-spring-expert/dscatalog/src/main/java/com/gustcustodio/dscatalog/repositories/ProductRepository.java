@@ -14,13 +14,14 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(nativeQuery = true, value = """
+             SELECT * FROM (\s
              SELECT DISTINCT tb_product.id, tb_product.name\s
              FROM tb_product\s
              INNER JOIN tb_product_category\s
              ON tb_product_category.product_id = tb_product.id\s
              WHERE (:categoryIds IS NULL OR tb_product_category.category_id IN (:categoryIds))\s
              AND (LOWER(tb_product.name) LIKE LOWER(CONCAT('%',:name,'%')))\s
-             ORDER BY tb_product.name\s
+             ) AS tb_result
             \s""", countQuery = """
              SELECT COUNT(*) FROM (\s
                      SELECT DISTINCT tb_product.id, tb_product.name\s
@@ -33,7 +34,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             \s""")
     Page<ProductProjection> searchProducts(List<Long> categoryIds, String name, Pageable pageable);
 
-    @Query("SELECT obj FROM Product obj JOIN FETCH obj.categories WHERE obj.id IN :productIds ORDER BY obj.name")
+    @Query("SELECT obj FROM Product obj JOIN FETCH obj.categories WHERE obj.id IN :productIds")
     List<Product> searchProductsWithCategories(List<Long> productIds);
 
 }
