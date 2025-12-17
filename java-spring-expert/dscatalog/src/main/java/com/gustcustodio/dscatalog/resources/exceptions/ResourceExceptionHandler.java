@@ -1,6 +1,7 @@
 package com.gustcustodio.dscatalog.resources.exceptions;
 
 import com.gustcustodio.dscatalog.services.exceptions.DatabaseException;
+import com.gustcustodio.dscatalog.services.exceptions.EmailException;
 import com.gustcustodio.dscatalog.services.exceptions.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -40,6 +41,13 @@ public class ResourceExceptionHandler {
             validationError.addError(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return ResponseEntity.status(httpStatus).body(validationError);
+    }
+
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<StandardError> email(EmailException e, HttpServletRequest request) {
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        StandardError standardError = new StandardError(Instant.now(), httpStatus.value(), e.getMessage(), "Email exception", request.getRequestURI());
+        return ResponseEntity.status(httpStatus).body(standardError);
     }
 
 }
