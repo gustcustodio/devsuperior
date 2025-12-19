@@ -30,6 +30,9 @@ import java.util.List;
 public class UserService implements UserDetailsService {
 
     @Autowired
+    private AuthService authService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -94,6 +97,12 @@ public class UserService implements UserDetailsService {
             Role role = roleRepository.getReferenceById(roleDTO.getId());
             entity.getRoles().add(role);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public UserDTO findMe() {
+        User entity = authService.authenticated();
+        return new UserDTO(entity);
     }
 
     @Override
