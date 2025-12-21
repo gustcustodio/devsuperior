@@ -1,12 +1,17 @@
 package com.devsuperior.movieflix.repositories;
 
 import com.devsuperior.movieflix.entities.Movie;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-
+    @Query(value = "SELECT obj FROM Movie obj JOIN FETCH obj.genre WHERE (:searchId IS NULL OR obj.genre.id = :searchId)",
+           countQuery = "SELECT COUNT(obj) FROM Movie obj WHERE (:searchId IS NULL OR obj.genre.id = :searchId)")
+    Page<Movie> searchMoviesWithGenres(Long searchId, Pageable pageable);
 
 }
