@@ -63,4 +63,27 @@ public class ProductServiceTests {
         Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.insert(productDTO));
     }
 
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExistsAndValidData() {
+        ProductService serviceSpy = Mockito.spy(productService);
+        Mockito.doNothing().when(serviceSpy).validateData(productDTO);
+        ProductDTO result = serviceSpy.update(existingId, productDTO);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(result.getId(), existingId);
+    }
+
+    @Test
+    public void updateShouldThrowInvalidDataExceptionWhenIdExistsAndProductNameIsBlank() {
+        productDTO.setName("");
+        ProductService serviceSpy = Mockito.spy(productService);
+        Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.update(existingId, productDTO));
+    }
+
+    @Test
+    public void updateShouldThrowInvalidDataExceptionWhenProductPriceIsNegativeOrZero() {
+        productDTO.setPrice(-5.0);
+        ProductService serviceSpy = Mockito.spy(productService);
+        Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.update(existingId, productDTO));
+    }
+
 }
