@@ -3,6 +3,7 @@ package com.devsuperior.examplemockspy.services;
 import com.devsuperior.examplemockspy.dto.ProductDTO;
 import com.devsuperior.examplemockspy.entities.Product;
 import com.devsuperior.examplemockspy.repositories.ProductRepository;
+import com.devsuperior.examplemockspy.services.exceptions.InvalidDataException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,20 @@ public class ProductServiceTests {
         ProductDTO result = serviceSpy.insert(productDTO);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(result.getName(), "Playstation");
+    }
+
+    @Test
+    public void insertShouldThrowInvalidDataExceptionWhenProductNameIsBlank() {
+        productDTO.setName("");
+        ProductService serviceSpy = Mockito.spy(productService);
+        Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.insert(productDTO));
+    }
+
+    @Test
+    public void insertShouldThrowInvalidDataExceptionWhenProductPriceIsNegativeOrZero() {
+        productDTO.setPrice(-5.0);
+        ProductService serviceSpy = Mockito.spy(productService);
+        Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.insert(productDTO));
     }
 
 }
