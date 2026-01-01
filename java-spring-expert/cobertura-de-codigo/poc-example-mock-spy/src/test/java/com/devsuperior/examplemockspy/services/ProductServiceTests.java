@@ -4,7 +4,9 @@ import com.devsuperior.examplemockspy.dto.ProductDTO;
 import com.devsuperior.examplemockspy.entities.Product;
 import com.devsuperior.examplemockspy.repositories.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
@@ -35,6 +37,15 @@ public class ProductServiceTests {
         Mockito.when(productRepository.save(ArgumentMatchers.any())).thenReturn(product);
         Mockito.when(productRepository.getReferenceById(existingId)).thenReturn(product);
         Mockito.when(productRepository.getReferenceById(nonExistingId)).thenThrow(EntityNotFoundException.class);
+    }
+
+    @Test
+    public void insertShouldReturnProductDTOWhenValidData() {
+        ProductService serviceSpy = Mockito.spy(productService);
+        Mockito.doNothing().when(serviceSpy).validateData(productDTO);
+        ProductDTO result = serviceSpy.insert(productDTO);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(result.getName(), "Playstation");
     }
 
 }
