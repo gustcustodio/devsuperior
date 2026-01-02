@@ -4,20 +4,19 @@ import com.devsuperior.examplemockspy.dto.ProductDTO;
 import com.devsuperior.examplemockspy.entities.Product;
 import com.devsuperior.examplemockspy.repositories.ProductRepository;
 import com.devsuperior.examplemockspy.services.exceptions.InvalidDataException;
+import com.devsuperior.examplemockspy.services.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ExtendWith(SpringExtension.class)
 public class ProductServiceTests {
 
+    @Spy
     @InjectMocks
     private ProductService productService;
 
@@ -84,6 +83,24 @@ public class ProductServiceTests {
         productDTO.setPrice(-5.0);
         ProductService serviceSpy = Mockito.spy(productService);
         Assertions.assertThrows(InvalidDataException.class, () -> serviceSpy.update(existingId, productDTO));
+    }
+
+    @Test
+    public void updateShouldThrowResourceNotFoundExceptionWhenIdDoesNotExistAndValidData() {
+        Mockito.doNothing().when(productService).validateData(productDTO);
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.update(nonExistingId, productDTO));
+    }
+
+    @Test
+    public void updateShouldThrowInvalidDataExceptionWhenIdDoesNotExistsAndNameIsBlank() {
+        productDTO.setName("");
+        Assertions.assertThrows(InvalidDataException.class, () -> productService.update(nonExistingId, productDTO));
+    }
+
+    @Test
+    public void updateShouldThrowInvalidDataExceptionWhenIdDoesNotExistAndPriceIsNegativeOrZero() {
+        productDTO.setPrice(-5.0);
+        Assertions.assertThrows(InvalidDataException.class, () -> productService.update(nonExistingId, productDTO));
     }
 
 }
