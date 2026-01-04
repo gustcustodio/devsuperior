@@ -1,6 +1,7 @@
 package com.devsuperior.dscommerce.services;
 
 import com.devsuperior.dscommerce.dto.ProductDTO;
+import com.devsuperior.dscommerce.dto.ProductMinDTO;
 import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
 import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
@@ -9,11 +10,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
@@ -27,15 +34,22 @@ public class ProductServiceTests {
 
     private long existingId, nonExistingId;
     private Product product;
+    private String productName;
+    private PageImpl<Product> page;
 
     @BeforeEach
     void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 2L;
         product = Factory.createProduct();
+        productName = "PlayStation 5";
+        page = new PageImpl<>(List.of(product));
 
+        // findById
         Mockito.when(productRepository.findById(existingId)).thenReturn(Optional.of(product));
         Mockito.when(productRepository.findById(nonExistingId)).thenReturn(Optional.empty());
+        // findAll
+        Mockito.when(productRepository.searchByName(ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(page);
     }
 
     @Test
@@ -49,6 +63,15 @@ public class ProductServiceTests {
     @Test
     public void findByIdShouldReturnResourceNotFoundExceptionWhenIdDoesNotExists() {
         Assertions.assertThrows(ResourceNotFoundException.class, () -> productService.findById(nonExistingId));
+    }
+
+    @Test
+    public void findAllShouldReturnPagedProductMinDTO() {
+        Pageable pageable = PageRequest.of(0, 12);
+        Page<ProductMinDTO> result = productService.findAll(productName, pageable);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(result.getSize(), 1);
+        Assertions.assertEquals(result.iterator().next().getName(), productName);
     }
 
 }
