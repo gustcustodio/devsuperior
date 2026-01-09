@@ -3,7 +3,7 @@ package com.devsuperior.dscommerce.services;
 import com.devsuperior.dscommerce.dto.CategoryDTO;
 import com.devsuperior.dscommerce.entities.Category;
 import com.devsuperior.dscommerce.repositories.CategoryRepository;
-import com.devsuperior.dscommerce.tests.Factory;
+import com.devsuperior.dscommerce.tests.CategoryFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class CategoryServiceTests {
 
     @BeforeEach
     void setUp() throws Exception {
-        category = Factory.createCategory();
+        category = CategoryFactory.createCategory();
         list = new ArrayList<>();
         list.add(category);
 

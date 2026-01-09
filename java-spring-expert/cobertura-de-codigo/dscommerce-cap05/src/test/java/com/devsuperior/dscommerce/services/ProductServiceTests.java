@@ -6,7 +6,7 @@ import com.devsuperior.dscommerce.entities.Product;
 import com.devsuperior.dscommerce.repositories.ProductRepository;
 import com.devsuperior.dscommerce.services.exceptions.DatabaseException;
 import com.devsuperior.dscommerce.services.exceptions.ResourceNotFoundException;
-import com.devsuperior.dscommerce.tests.Factory;
+import com.devsuperior.dscommerce.tests.ProductFactory;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +46,8 @@ public class ProductServiceTests {
         existingId = 1L;
         nonExistingId = 2L;
         dependentId = 3L;
-        product = Factory.createProduct();
-        productDTO = Factory.createProductDTO();
+        product = ProductFactory.createProduct();
+        productDTO = ProductFactory.createProductDTO();
         productName = "PlayStation 5";
         page = new PageImpl<>(List.of(product));
 
