@@ -15,7 +15,7 @@ public class UserFactory {
 
     public static User createAdminUser() {
         User user = new User(1L, "Alex Green", "alex@gmail.com", "977777777", LocalDate.parse("1987-12-13"), "$2a$10$N7SkKCa3r17ga.i.dF9iy.BFUBL2n3b6Z1CWSZWi/qy7ABq/E6VpO");
-        user.addRole(new Role(1L, "ROLE_ADMIN"));
+        user.addRole(new Role(2L, "ROLE_ADMIN"));
         return user;
     }
 
@@ -27,7 +27,7 @@ public class UserFactory {
 
     public static User createCustomAdminUser(Long id, String username) {
         User user = new User(id, "Alex Green", username, "977777777", LocalDate.parse("1987-12-13"), "$2a$10$N7SkKCa3r17ga.i.dF9iy.BFUBL2n3b6Z1CWSZWi/qy7ABq/E6VpO");
-        user.addRole(new Role(1L, "ROLE_ADMIN"));
+        user.addRole(new Role(2L, "ROLE_ADMIN"));
         return user;
     }
 
