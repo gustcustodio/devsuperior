@@ -3,6 +3,7 @@ package com.devsuperior.dsmovie.services;
 import com.devsuperior.dsmovie.dto.MovieDTO;
 import com.devsuperior.dsmovie.entities.MovieEntity;
 import com.devsuperior.dsmovie.repositories.MovieRepository;
+import com.devsuperior.dsmovie.services.exceptions.DatabaseException;
 import com.devsuperior.dsmovie.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.dsmovie.tests.MovieFactory;
 import jakarta.persistence.EntityNotFoundException;
@@ -14,6 +15,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +34,7 @@ public class MovieServiceTests {
 	@Mock
 	private MovieRepository movieRepository;
 
-    private Long existingId, nonExistingId;
+    private Long existingId, nonExistingId, dependentId;
 	private MovieEntity movie;
 	private MovieDTO movieDTO;
 	Pageable pageable;
@@ -42,20 +44,23 @@ public class MovieServiceTests {
 	void setUp() throws Exception {
         existingId = 1L;
         nonExistingId = 2L;
+		dependentId = 3L;
 		movie = MovieFactory.createMovieEntity();
 		movieDTO = MovieFactory.createMovieDTO();
 		pageable = PageRequest.of(0, 10);
 		page = new PageImpl<>(List.of(movie));
 
 		Mockito.when(movieRepository.searchByTitle(ArgumentMatchers.anyString(), (Pageable) ArgumentMatchers.any())).thenReturn(page);
-
         Mockito.when(movieRepository.findById(existingId)).thenReturn(Optional.of(movie));
         Mockito.when(movieRepository.findById(nonExistingId)).thenReturn(Optional.empty());
-
 		Mockito.when(movieRepository.save(ArgumentMatchers.any())).thenReturn(movie);
-
 		Mockito.when(movieRepository.getReferenceById(existingId)).thenReturn(movie);
 		Mockito.when(movieRepository.getReferenceById(nonExistingId)).thenThrow(EntityNotFoundException.class);
+		Mockito.doNothing().when(movieRepository).deleteById(existingId);
+		Mockito.doThrow(DataIntegrityViolationException.class).when(movieRepository).deleteById(dependentId);
+		Mockito.when(movieRepository.existsById(existingId)).thenReturn(true);
+		Mockito.when(movieRepository.existsById(nonExistingId)).thenReturn(false);
+		Mockito.when(movieRepository.existsById(dependentId)).thenReturn(true);
 	}
 
 	@Test
@@ -108,13 +113,19 @@ public class MovieServiceTests {
 
 	@Test
 	public void deleteShouldDoNothingWhenIdExists() {
+		Assertions.assertDoesNotThrow(() -> movieService.delete(existingId));
+		Mockito.verify(movieRepository, Mockito.times(1)).deleteById(existingId);
 	}
 
 	@Test
 	public void deleteShouldThrowResourceNotFoundExceptionWhenIdDoesNotExist() {
+		Assertions.assertThrows(ResourceNotFoundException.class, () -> movieService.delete(nonExistingId));
+		Mockito.verify(movieRepository, Mockito.times(1)).existsById(nonExistingId);
 	}
 
 	@Test
 	public void deleteShouldThrowDatabaseExceptionWhenDependentId() {
+		Assertions.assertThrows(DatabaseException.class, () -> movieService.delete(dependentId));
+		Mockito.verify(movieRepository, Mockito.times(1)).deleteById(dependentId);
 	}
 }
