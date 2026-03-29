@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -21,7 +22,7 @@ public class UserService {
     }
 
     public UserDTO findById(String id) {
-        User entity = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Objeto não encontrado"));
+        User entity = getEntityById(id);
         return new UserDTO(entity);
     }
 
@@ -30,6 +31,18 @@ public class UserService {
         copyDtoToEntity(entity, dto);
         entity = userRepository.insert(entity);
         return new UserDTO(entity);
+    }
+
+    public UserDTO update(String id, UserDTO dto) {
+        User entity = getEntityById(id);
+        copyDtoToEntity(entity, dto);
+        entity = userRepository.save(entity);
+        return new UserDTO(entity);
+    }
+
+    private User getEntityById(String id) {
+        Optional<User> result = userRepository.findById(id);
+        return result.orElseThrow(() -> new ResourceNotFoundException("Objeto não encontrado"));
     }
 
     private void copyDtoToEntity(User entity, UserDTO dto) {
