@@ -25,4 +25,16 @@ public class UserService {
         return new UserDTO(entity);
     }
 
+    public UserDTO insert(UserDTO dto) {
+        User entity = new User();
+        copyDtoToEntity(entity, dto);
+        entity = userRepository.insert(entity);
+        return new UserDTO(entity);
+    }
+
+    private void copyDtoToEntity(User entity, UserDTO dto) {
+        entity.setName(dto.getName());
+        entity.setEmail(dto.getEmail());
+    }
+
 }
