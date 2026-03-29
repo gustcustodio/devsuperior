@@ -1,5 +1,6 @@
 package com.gustcustodio.workshop_mongo.services;
 
+import com.gustcustodio.workshop_mongo.models.dtos.PostDTO;
 import com.gustcustodio.workshop_mongo.models.dtos.UserDTO;
 import com.gustcustodio.workshop_mongo.models.entities.User;
 import com.gustcustodio.workshop_mongo.repositories.UserRepository;
@@ -24,6 +25,11 @@ public class UserService {
     public UserDTO findById(String id) {
         User entity = getEntityById(id);
         return new UserDTO(entity);
+    }
+
+    public List<PostDTO> getUserPosts(String id) {
+        User entity = getEntityById(id);
+        return entity.getPosts().stream().map(PostDTO::new).toList();
     }
 
     public UserDTO insert(UserDTO dto) {

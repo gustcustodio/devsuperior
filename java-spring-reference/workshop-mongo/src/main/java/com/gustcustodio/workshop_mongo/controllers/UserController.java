@@ -1,5 +1,6 @@
 package com.gustcustodio.workshop_mongo.controllers;
 
+import com.gustcustodio.workshop_mongo.models.dtos.PostDTO;
 import com.gustcustodio.workshop_mongo.models.dtos.UserDTO;
 import com.gustcustodio.workshop_mongo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class UserController {
     public ResponseEntity<UserDTO> findById(@PathVariable String id) {
         UserDTO dto = userService.findById(id);
         return ResponseEntity.ok().body(dto);
+    }
+
+    @GetMapping(value="/{id}/posts")
+    public ResponseEntity<List<PostDTO>> getUserPosts(@PathVariable String id) {
+        List<PostDTO> list = userService.getUserPosts(id);
+        return ResponseEntity.ok().body(list);
     }
 
     @PostMapping
