@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,9 +80,15 @@ public class ProductControllerIT {
     @Test
     public void insertShouldReturnProductDTOCreatedWhenLoggedAsAdmin() throws Exception {
         ResultActions result = mockMvc.perform(post("/products")
-                .header("Authorization", "Bearer " + adminToken)
-                .content(objectMapper.writeValueAsString(productDTO))
-                .accept(MediaType.APPLICATION_JSON));
+                        .header("Authorization", "Bearer " + adminToken)
+                        .content(objectMapper.writeValueAsString(productDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print());
+        result.andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(26))
+                .andExpect(jsonPath("$.name").value("Console PlayStation 5"))
+                .andExpect(jsonPath("$.description").value("consectetur adipiscing elit, sed"));
     }
 
 }
