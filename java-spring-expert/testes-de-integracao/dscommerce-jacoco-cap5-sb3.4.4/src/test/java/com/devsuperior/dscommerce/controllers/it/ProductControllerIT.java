@@ -155,4 +155,24 @@ public class ProductControllerIT {
 
     // * fim - possibilidade de refatorar para teste parametrizado * //
 
+    @Test
+    public void insertShouldReturnForbiddenWhenClientLogged() throws Exception {
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + clientToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isForbidden());
+    }
+
+    @Test
+    public void insertShouldReturnUnauthorizedWhenInvalidToken() throws Exception {
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + invalidToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnauthorized());
+    }
+
 }
