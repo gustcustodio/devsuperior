@@ -91,4 +91,68 @@ public class ProductControllerIT {
                 .andExpect(jsonPath("$.description").value("consectetur adipiscing elit, sed"));
     }
 
+    // * possibilidade de refatorar para teste parametrizado * //
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndInvalidName() throws Exception {
+        product.setName("ab");
+        productDTO = new ProductDTO(product);
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + adminToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndInvalidDescription() throws Exception {
+        product.setDescription("ab");
+        productDTO = new ProductDTO(product);
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + adminToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndPriceIsNegative() throws Exception {
+        product.setPrice(-2.0);
+        productDTO = new ProductDTO(product);
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + adminToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndPriceIsZero() throws Exception {
+        product.setPrice(0.0);
+        productDTO = new ProductDTO(product);
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + adminToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndProductHasNoCategory() throws Exception {
+        product.getCategories().clear();
+        productDTO = new ProductDTO(product);
+        ResultActions result = mockMvc.perform(post("/products")
+                .header("Authorization", "Bearer " + adminToken)
+                .content(objectMapper.writeValueAsString(productDTO))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isUnprocessableEntity());
+    }
+
+    // * fim - possibilidade de refatorar para teste parametrizado * //
+
 }
