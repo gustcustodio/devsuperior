@@ -88,6 +88,14 @@ public class ProductControllerRA {
     }
 
     @Test
+    public void findByIdShouldReturnNotFoundWhenIdDoesNotExist() {
+        given()
+                .get("products/{id}", nonExistingProductId)
+        .then()
+                .statusCode(404);
+    }
+
+    @Test
     public void findAllShouldReturnPagedProductsWhenProductNameParamIsEmpty() {
         given()
                 .get("/products?page=0")
@@ -149,6 +157,78 @@ public class ProductControllerRA {
                 .post("/products")
         .then()
                 .statusCode(422);
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndInvalidDescription() {
+        postProductInstance.put("description", "ab");
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(422)
+                .body("errors.message[0]", equalTo("Descrição precisa ter no mínimo 10 caracteres"));
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndPriceIsNegative() {
+        postProductInstance.put("price", -2.0);
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(422)
+                .body("errors.message[0]", equalTo("O preço deve ser positivo"));
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndPriceIsZero(){
+        postProductInstance.put("price", 0.0);
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(422)
+                .body("errors.message[0]", equalTo("O preço deve ser positivo"));
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndProductHasNoCategory(){
+        postProductInstance.put("categories", null);
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(422)
+                .body("errors.message[0]", equalTo("Deve ter pelo menos uma categoria"));
     }
 
     @Test
@@ -226,6 +306,78 @@ public class ProductControllerRA {
     public void updateShouldReturnUnprocessableEntityWhenIdExistsAndAdminLoggedAndInvalidName() {
         putProductInstance.put("name", "ab");
         JSONObject product = new JSONObject(putProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(product)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .put("/products/{id}", existingProductId)
+        .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenAdminLoggedAndInvalidDescription(){
+        putProductInstance.put("description", "ab");
+        JSONObject product = new JSONObject(putProductInstance);
+        existingProductId = 10L;
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(product)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .put("/products/{id}", existingProductId)
+        .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenIdExistsAndAdminLoggedAndPriceIsNegative() {
+        putProductInstance.put("price", -2.0);
+        JSONObject product = new JSONObject(putProductInstance);
+        existingProductId = 10L;
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(product)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .put("/products/{id}", existingProductId)
+        .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenIdExistsAndAdminLoggedAndPriceIsZero() {
+        putProductInstance.put("price", 0.0);
+        JSONObject product = new JSONObject(putProductInstance);
+        existingProductId = 10L;
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(product)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .put("/products/{id}", existingProductId)
+        .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void updateShouldReturnUnprocessableEntityWhenIdExistsAndAdminLoggedAndProductHasNoCategory() {
+        putProductInstance.put("categories", null);
+        JSONObject product = new JSONObject(putProductInstance);
+        existingProductId = 10L;
 
         given()
                 .header("Content-type", "application/json")
