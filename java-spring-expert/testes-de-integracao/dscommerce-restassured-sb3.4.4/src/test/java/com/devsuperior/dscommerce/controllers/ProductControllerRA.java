@@ -107,7 +107,7 @@ public class ProductControllerRA {
     }
 
     @Test
-    public void insertShouldReturnProductCreatedWhenLoggedAsAdmin() throws JSONException {
+    public void insertShouldReturnProductCreatedWhenLoggedAsAdmin() {
         JSONObject newProduct = new JSONObject(postProductInstance);
 
         given()
@@ -124,6 +124,55 @@ public class ProductControllerRA {
                 .body("price", is(20.0f))
                 .body("imgUrl", equalTo("https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg"))
                 .body("categories.id", hasItems(2, 3));
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndInvalidName() {
+        postProductInstance.put("name", "ab");
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + adminToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void insertShouldReturnForbiddenWhenClientLogged() {
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + clientToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void insertShouldReturnUnauthorizedWhenInvalidToken() {
+        JSONObject newProduct = new JSONObject(postProductInstance);
+
+        given()
+                .header("Content-type", "application/json")
+                .header("Authorization", "Bearer " + invalidToken)
+                .body(newProduct)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+        .when()
+                .post("/products")
+        .then()
+                .statusCode(401);
     }
 
 }
